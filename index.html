@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>m1gawar1 games</title>
+<meta name="description" content="スマホで遊べる、ちょっと変なブラウザゲーム。予測変換しか押せないスマホで返信する「ヨミスギ」ほか。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="m1gawar1 games">
+<meta property="og:title" content="m1gawar1 games">
+<meta property="og:description" content="スマホで遊べる、ちょっと変なブラウザゲーム。予測変換しか押せないスマホで返信する「ヨミスギ」ほか。">
+<meta property="og:url" content="https://m1gawar1.github.io/">
+<!-- 一覧ページ専用の画像ができるまではヨミスギの OGP を流用 -->
+<meta property="og:image" content="https://m1gawar1.github.io/yomisugi/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#eef0f3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef0f3;
+    --surface: #ffffff;
+    --text: #1d2230;
+    --text-sub: #5a6070;
+    --line: #d8dce3;
+    --marker: #ffe14d;
+    --btn-bg: #1d2230;
+    --btn-text: #ffffff;
+    --soon-bg: #e4e7ec;
+    --soon-text: #8a909c;
+    --shadow: 0 2px 10px rgba(29, 34, 48, 0.08);
+    --font-head: "Dela Gothic One", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    --font-body: "Zen Maru Gothic", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161a22;
+      --surface: #212633;
+      --text: #e8eaf0;
+      --text-sub: #a3a9b6;
+      --line: #343a48;
+      --marker: #e6c62e;
+      --btn-bg: #ffe14d;
+      --btn-text: #1d2230;
+      --soon-bg: #1c2029;
+      --soon-text: #6f7684;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+    line-break: strict;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  .wrap {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* ヒーロー（控えめ） */
+  .hero { padding: 36px 0 20px; }
+  .site-name {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 400;
+    font-size: clamp(26px, 7vw, 36px);
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+  }
+  .site-name span {
+    background: linear-gradient(transparent 60%, var(--marker) 60%);
+    padding: 0 2px;
+  }
+  .tagline {
+    margin: 6px 0 0;
+    color: var(--text-sub);
+    font-size: 14px;
+  }
+
+  /* カード一覧 */
+  .games {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0 40px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 640px) {
+    .games { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .hero { padding: 56px 0 28px; }
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    min-width: 0;
+  }
+  .thumb {
+    display: block;
+    width: 100%;
+    height: auto; /* height 属性の 630px が効かないよう、幅から高さを出す */
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    background: var(--soon-bg);
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    padding: 16px 16px 18px;
+  }
+  .card-title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.35;
+    letter-spacing: 0.02em;
+    font-feature-settings: "palt" 1;
+  }
+  .catch {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+  .catch span { background: linear-gradient(transparent 62%, var(--marker) 62%); }
+  .desc { margin: 0; color: var(--text-sub); font-size: 14px; }
+  .tags {
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tags li {
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--text-sub);
+  }
+  .play {
+    margin-top: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 132px;
+    padding: 0 28px;
+    border-radius: 999px;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    font-family: var(--font-head);
+    font-weight: 400;
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: transform 0.12s ease;
+  }
+  .card-body .tags + .play { margin-top: 10px; }
+  .play:hover { transform: translateY(-1px); }
+  .play:active { transform: translateY(1px); }
+  .play:focus-visible { outline: 3px solid var(--marker); outline-offset: 3px; }
+
+  /* 準備中カード：薄く・控えめに */
+  .card.is-soon {
+    background: transparent;
+    box-shadow: none;
+    border: 1.5px dashed var(--line);
+  }
+  .card.is-soon .card-body { opacity: 0.75; }
+  .placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1200 / 630;
+    padding: 16px;
+    background: var(--soon-bg);
+    color: var(--soon-text);
+    font-family: var(--font-head);
+    font-size: clamp(20px, 6vw, 28px);
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+  .badge {
+    align-self: flex-start;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--soon-bg);
+    color: var(--soon-text);
+  }
+  .card.is-soon .card-title { font-size: 18px; color: var(--text-sub); }
+
+  /* フッター */
+  .footer {
+    border-top: 1px solid var(--line);
+    padding: 20px 0 32px;
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .footer .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px 16px;
+  }
+  .footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    text-underline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <h1 class="site-name"><span data-site-name>m1gawar1 games</span></h1>
+      <p class="tagline">スマホで遊べる、ちょっと変なブラウザゲーム。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <ul class="games" id="games">
+      <noscript>
+        <li class="card"><div class="card-body">
+          <h2 class="card-title">ヨミスギ</h2>
+          <a class="play" href="https://m1gawar1.github.io/yomisugi/">遊ぶ</a>
+        </div></li>
+      </noscript>
+    </ul>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>&copy; 2026 m1gawar1</span>
+      <a href="https://github.com/m1gawar1" rel="noopener">GitHub</a>
+    </div>
+  </footer>
+
+<script>
+  // サイト名はここだけ変えれば title・見出しに反映される
+  const SITE_NAME = "m1gawar1 games";
+
+  // 掲載ゲーム一覧。ここに1件足すとカードが1枚増える
+  // status: "live"（公開中）/ "soon"（準備中：リンクなし・薄く表示）
+  const GAMES = [
+    {
+      status: "live",
+      title: "ヨミスギ",
+      url: "https://m1gawar1.github.io/yomisugi/",
+      image: "https://m1gawar1.github.io/yomisugi/og.png",
+      catch: "キーボードが壊れて、予測変換しか押せない。",
+      desc: "しかもこのスマホは予測しすぎる。お母さんや部長からのメッセージに返信して、エンディングを集めよう。",
+      tags: ["スマホ向け", "1プレイ1分", "エンディング収集"],
+    },
+    {
+      status: "soon",
+      title: "カイダン",
+      desc: "乗ってくる人の行き先を、本人より先に押せ。",
+    },
+    {
+      status: "soon",
+      title: "数字ゲートのランナー（仮）",
+      desc: "広告でよく見る「数字ゲートのランナー」を、本当に遊べるようにしたゲーム。",
+    },
+  ];
+
+  // 要素作成の小さなヘルパー（textContent で入れるのでエスケープ不要）
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function renderCard(g) {
+    const live = g.status === "live";
+    const li = el("li", live ? "card" : "card is-soon");
+
+    // 画像（準備中や画像なしはタイトル文字のプレースホルダ）
+    if (live && g.image) {
+      const img = el("img", "thumb");
+      img.src = g.image;
+      img.alt = g.title + "のタイトル画像";
+      img.width = 1200;
+      img.height = 630;
+      img.loading = "lazy";
+      img.decoding = "async";
+      li.append(img);
+    } else {
+      const ph = el("div", "placeholder", g.title);
+      ph.setAttribute("aria-hidden", "true");
+      li.append(ph);
+    }
+
+    const body = el("div", "card-body");
+    if (!live) body.append(el("span", "badge", "準備中"));
+    body.append(el("h2", "card-title", g.title));
+
+    if (g.catch) {
+      const p = el("p", "catch");
+      p.append(el("span", null, g.catch));
+      body.append(p);
+    }
+    if (g.desc) body.append(el("p", "desc", g.desc));
+
+    if (g.tags && g.tags.length) {
+      const ul = el("ul", "tags");
+      g.tags.forEach(t => ul.append(el("li", null, t)));
+      body.append(ul);
+    }
+
+    if (live && g.url) {
+      const a = el("a", "play", "遊ぶ");
+      a.href = g.url;
+      a.setAttribute("aria-label", g.title + "を遊ぶ");
+      body.append(a);
+    }
+
+    li.append(body);
+    return li;
+  }
+
+  document.title = SITE_NAME;
+  document.querySelectorAll("[data-site-name]").forEach(n => (n.textContent = SITE_NAME));
+  document.getElementById("games").replaceChildren(...GAMES.map(renderCard));
+</script>
+</body>
+</html>
